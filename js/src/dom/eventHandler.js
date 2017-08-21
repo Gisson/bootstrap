@@ -12,6 +12,21 @@ const TransitionEndEvent = {
   transition       : 'transitionend'
 }
 
+// CustomEvent polyfill for IE (see: https://mzl.la/2v76Zvn)
+if (typeof window.CustomEvent !== 'function') {
+  const CustomEvent = (event, params) => {
+    params = params || {
+      bubbles: false,
+      cancelable: false,
+      detail: undefined
+    }
+    const evt = document.createEvent('CustomEvent')
+    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail)
+    return evt
+  }
+  CustomEvent.prototype = window.Event.prototype
+}
+
 const EventHandler = {
   on(element, event, handler) {
     if (typeof event !== 'string' || typeof element === 'undefined') {
